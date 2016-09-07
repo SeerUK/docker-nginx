@@ -1,0 +1,86 @@
+server {
+    listen ${PHP_HTTP_PORT} default_server;
+    listen [::]:${PHP_HTTP_PORT} default_server ipv6only=on;
+
+    port_in_redirect off;
+    sendfile off;
+
+    root /opt/www/web/;
+    index ${PHP_INDEX} index.html index.htm;
+
+    location / {
+        satisfy any;
+
+        try_files ${ESCAPE}uri /${PHP_INDEX}${ESCAPE}is_args${ESCAPE}args;
+    }
+
+    location ~ ^/(app_dev|config)\.php(/|${ESCAPE}) {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT ${ESCAPE}realpath_root;
+    }
+
+    location ~ ^/app\.php(/|${ESCAPE}) {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT ${ESCAPE}realpath_root;
+
+        internal;
+    }
+
+    location ~ \.php${ESCAPE} {
+        return 404;
+    }
+
+    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+}
+
+server {
+    listen ${PHP_HTTPS_PORT} ssl http2 default_server;
+    listen [::]:${PHP_HTTPS_PORT} ssl http2 default_server ipv6only=on;
+
+    port_in_redirect off;
+    sendfile off;
+
+    root /opt/www/web/;
+    index ${PHP_INDEX} index.html index.htm;
+
+    ssl_certificate /etc/nginx/ssl.d/server.crt;
+    ssl_certificate_key /etc/nginx/ssl.d/server.key;
+
+    location / {
+        satisfy any;
+
+        try_files ${ESCAPE}uri /${PHP_INDEX}${ESCAPE}is_args${ESCAPE}args;
+    }
+
+    location ~ ^/(app_dev|config)\.php(/|${ESCAPE}) {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT ${ESCAPE}realpath_root;
+    }
+
+    location ~ ^/app\.php(/|${ESCAPE}) {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT ${ESCAPE}realpath_root;
+
+        internal;
+    }
+
+    location ~ \.php${ESCAPE} {
+        return 404;
+    }
+
+    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+}
