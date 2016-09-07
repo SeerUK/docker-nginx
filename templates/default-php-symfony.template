@@ -15,7 +15,7 @@ server {
     }
 
     location ~ ^/(app_dev|config)\.php(/|${ESCAPE}) {
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_pass ${PHP_FPM_HOST}:${PHP_FPM_PORT};
         fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
@@ -23,7 +23,7 @@ server {
     }
 
     location ~ ^/app\.php(/|${ESCAPE}) {
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_pass ${PHP_FPM_HOST}:${PHP_FPM_PORT};
         fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
@@ -60,7 +60,7 @@ server {
     }
 
     location ~ ^/(app_dev|config)\.php(/|${ESCAPE}) {
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_pass ${PHP_FPM_HOST}:${PHP_FPM_PORT};
         fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
@@ -68,7 +68,7 @@ server {
     }
 
     location ~ ^/app\.php(/|${ESCAPE}) {
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_pass ${PHP_FPM_HOST}:${PHP_FPM_PORT};
         fastcgi_split_path_info ^(.+\.php)(/.*)${ESCAPE};
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME ${ESCAPE}realpath_root${ESCAPE}fastcgi_script_name;
